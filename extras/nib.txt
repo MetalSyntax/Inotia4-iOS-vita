@@ -1,0 +1,6 @@
+delegate Inotia3AppDelegate
+window 320 480
+view MyEAGLView 480 320
+outlet owner delegate delegate
+outlet delegate window window
+outlet delegate glView view

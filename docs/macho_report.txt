@@ -1,0 +1,691 @@
+ejecutable: game_app/Inotia4_global  pie=True  entry=0x33e0  imagen=[0x1000,0x3de000)
+rebase: 49882 palabras   binds: 6201 slots / 686 símbolos
+modo: PIE/dyld_info (exacto); 16 binds resueltos dentro de la imagen
+
+# imports
+_ABAddressBookCopyArrayOfAllPeople
+_ABAddressBookCreate
+_ABMultiValueCopyValueAtIndex
+_ABMultiValueGetCount
+_ABPersonComparePeopleByName
+_ABPersonCopyImageData
+_ABPersonCopyImageDataWithFormat
+_ABPersonGetSortOrdering
+_ABRecordCopyValue
+_AudioComponentFindNext
+_AudioComponentInstanceDispose
+_AudioComponentInstanceNew
+_AudioFileClose
+_AudioFileGetProperty
+_AudioFileGetPropertyInfo
+_AudioFileOpenWithCallbacks
+_AudioFileReadPacketData
+_AudioOutputUnitStart
+_AudioOutputUnitStop
+_AudioQueueAllocateBuffer
+_AudioQueueAllocateBufferWithPacketDescriptions
+_AudioQueueDispose
+_AudioQueueEnqueueBuffer
+_AudioQueueFlush
+_AudioQueueNewOutput
+_AudioQueueOfflineRender
+_AudioQueueSetOfflineRenderFormat
+_AudioQueueSetProperty
+_AudioQueueStart
+_AudioQueueStop
+_AudioServicesPlaySystemSound
+_AudioSessionAddPropertyListener
+_AudioSessionGetProperty
+_AudioSessionInitialize
+_AudioSessionSetActive
+_AudioSessionSetProperty
+_AudioUnitGetProperty
+_AudioUnitInitialize
+_AudioUnitRender
+_AudioUnitSetProperty
+_AudioUnitUninitialize
+_CCCrypt
+_CC_MD5
+_CC_SHA1
+_CFAbsoluteTimeGetCurrent
+_CFArrayCreateMutable
+_CFArrayCreateMutableCopy
+_CFArrayGetCount
+_CFArrayGetValueAtIndex
+_CFArraySortValues
+_CFBitVectorCreate
+_CFBitVectorCreateMutableCopy
+_CFBitVectorGetBitAtIndex
+_CFBitVectorSetBitAtIndex
+_CFDictionaryCreateMutable
+_CFDictionaryGetValue
+_CFDictionarySetValue
+_CFHostCreateWithName
+_CFLocaleCopyCurrent
+_CFLocaleGetValue
+_CFMakeCollectable
+_CFNumberGetType
+_CFNumberGetValue
+_CFReadStreamClose
+_CFReadStreamHasBytesAvailable
+_CFReadStreamOpen
+_CFReadStreamRead
+_CFReadStreamScheduleWithRunLoop
+_CFReadStreamSetClient
+_CFReadStreamUnscheduleFromRunLoop
+_CFRelease
+_CFRunLoopAddTimer
+_CFRunLoopGetCurrent
+_CFRunLoopGetMain
+_CFRunLoopRemoveTimer
+_CFRunLoopTimerCreate
+_CFRunLoopTimerSetNextFireDate
+_CFStreamCreatePairWithSocketToCFHost
+_CFStringAppend
+_CFStringAppendCharacters
+_CFStringConvertEncodingToNSStringEncoding
+_CFStringCreateWithCString
+_CFStringCreateWithCharacters
+_CFStringGetCString
+_CFStringGetCharactersPtr
+_CFURLCreateStringByAddingPercentEscapes
+_CFURLCreateStringByReplacingPercentEscapesUsingEncoding
+_CFUUIDCreate
+_CFUUIDCreateString
+_CFWriteStreamCanAcceptBytes
+_CFWriteStreamClose
+_CFWriteStreamOpen
+_CFWriteStreamScheduleWithRunLoop
+_CFWriteStreamSetClient
+_CFWriteStreamUnscheduleFromRunLoop
+_CFWriteStreamWrite
+_CGAffineTransformIdentity  [dato]
+_CGAffineTransformMakeRotation
+_CGAffineTransformMakeTranslation
+_CGAffineTransformRotate
+_CGAffineTransformScale
+_CGBitmapContextCreate
+_CGBitmapContextCreateImage
+_CGBitmapContextGetData
+_CGBitmapContextGetHeight
+_CGBitmapContextGetWidth
+_CGColorGetComponents
+_CGColorSpaceCreateDeviceGray
+_CGColorSpaceCreateDeviceRGB
+_CGColorSpaceRelease
+_CGContextAddArcToPoint
+_CGContextAddLineToPoint
+_CGContextAddRect
+_CGContextBeginPath
+_CGContextClosePath
+_CGContextConcatCTM
+_CGContextDrawImage
+_CGContextDrawPath
+_CGContextFillPath
+_CGContextFillRect
+_CGContextMoveToPoint
+_CGContextRelease
+_CGContextRestoreGState
+_CGContextSaveGState
+_CGContextScaleCTM
+_CGContextSetAlpha
+_CGContextSetFillColor
+_CGContextSetFillColorWithColor
+_CGContextSetGrayFillColor
+_CGContextSetLineWidth
+_CGContextSetRGBStrokeColor
+_CGContextSetStrokeColor
+_CGContextSetStrokeColorSpace
+_CGContextSetStrokeColorWithColor
+_CGContextSetTextDrawingMode
+_CGContextStrokeLineSegments
+_CGContextStrokePath
+_CGContextTranslateCTM
+_CGImageGetHeight
+_CGImageGetWidth
+_CGImageRelease
+_CGPointZero  [dato]
+_CGRectContainsPoint
+_CGRectGetHeight
+_CGRectGetMaxX
+_CGRectGetMaxY
+_CGRectGetMidX
+_CGRectGetMidY
+_CGRectGetMinX
+_CGRectGetMinY
+_CGRectGetWidth
+_CGRectInset
+_CGRectOffset
+_CGRectZero  [dato]
+_CGSizeZero  [dato]
+_NSClassFromString
+_NSDefaultRunLoopMode  [dato]
+_NSFileTypeDirectory  [dato]
+_NSFoundationVersionNumber  [dato]
+_NSGenericException  [dato]
+_NSGregorianCalendar
+_NSHTTPCookieDomain
+_NSHTTPCookieName
+_NSHTTPCookiePath
+_NSHTTPCookieValue
+_NSHomeDirectory
+_NSIntersectionRange
+_NSLocaleCountryCode  [dato]
+_NSLocalizedDescriptionKey  [dato]
+_NSLocalizedFailureReasonErrorKey  [dato]
+_NSLog
+_NSPOSIXErrorDomain
+_NSSearchPathForDirectoriesInDomains
+_NSSelectorFromString
+_NSStringFromClass
+_NSStringFromSelector
+_NSTemporaryDirectory
+_NSURLErrorDomain  [dato]
+_OBJC_CLASS_$_AVAudioPlayer  [dato]
+_OBJC_CLASS_$_CAEAGLLayer  [dato]
+_OBJC_CLASS_$_EAGLContext  [dato]
+_OBJC_CLASS_$_GKAchievement  [dato]
+_OBJC_CLASS_$_GKAchievementViewController  [dato]
+_OBJC_CLASS_$_GKLeaderboardViewController  [dato]
+_OBJC_CLASS_$_GKLocalPlayer  [dato]
+_OBJC_CLASS_$_GKScore  [dato]
+_OBJC_CLASS_$_NSArray  [dato]
+_OBJC_CLASS_$_NSAssertionHandler  [dato]
+_OBJC_CLASS_$_NSAutoreleasePool  [dato]
+_OBJC_CLASS_$_NSBundle  [dato]
+_OBJC_CLASS_$_NSCalendar  [dato]
+_OBJC_CLASS_$_NSCharacterSet  [dato]
+_OBJC_CLASS_$_NSData  [dato]
+_OBJC_CLASS_$_NSDate  [dato]
+_OBJC_CLASS_$_NSDateComponents  [dato]
+_OBJC_CLASS_$_NSDateFormatter  [dato]
+_OBJC_CLASS_$_NSDecimalNumber  [dato]
+_OBJC_CLASS_$_NSDictionary  [dato]
+_OBJC_CLASS_$_NSError  [dato]
+_OBJC_CLASS_$_NSException  [dato]
+_OBJC_CLASS_$_NSFileHandle  [dato]
+_OBJC_CLASS_$_NSFileManager  [dato]
+_OBJC_CLASS_$_NSHTTPCookie  [dato]
+_OBJC_CLASS_$_NSHTTPCookieStorage  [dato]
+_OBJC_CLASS_$_NSHTTPURLResponse  [dato]
+_OBJC_CLASS_$_NSIndexPath  [dato]
+_OBJC_CLASS_$_NSIndexSet  [dato]
+_OBJC_CLASS_$_NSInputStream  [dato]
+_OBJC_CLASS_$_NSInvocation  [dato]
+_OBJC_CLASS_$_NSInvocationOperation  [dato]
+_OBJC_CLASS_$_NSKeyedArchiver  [dato]
+_OBJC_CLASS_$_NSKeyedUnarchiver  [dato]
+_OBJC_CLASS_$_NSLocale  [dato]
+_OBJC_CLASS_$_NSLock  [dato]
+_OBJC_CLASS_$_NSMutableArray  [dato]
+_OBJC_CLASS_$_NSMutableData  [dato]
+_OBJC_CLASS_$_NSMutableDictionary  [dato]
+_OBJC_CLASS_$_NSMutableSet  [dato]
+_OBJC_CLASS_$_NSMutableString  [dato]
+_OBJC_CLASS_$_NSMutableURLRequest  [dato]
+_OBJC_CLASS_$_NSNotificationCenter  [dato]
+_OBJC_CLASS_$_NSNull  [dato]
+_OBJC_CLASS_$_NSNumber  [dato]
+_OBJC_CLASS_$_NSNumberFormatter  [dato]
+_OBJC_CLASS_$_NSObject  [dato]
+_OBJC_CLASS_$_NSOperation  [dato]
+_OBJC_CLASS_$_NSOperationQueue  [dato]
+_OBJC_CLASS_$_NSOutputStream  [dato]
+_OBJC_CLASS_$_NSProcessInfo  [dato]
+_OBJC_CLASS_$_NSRecursiveLock  [dato]
+_OBJC_CLASS_$_NSRunLoop  [dato]
+_OBJC_CLASS_$_NSScanner  [dato]
+_OBJC_CLASS_$_NSSet  [dato]
+_OBJC_CLASS_$_NSSortDescriptor  [dato]
+_OBJC_CLASS_$_NSString  [dato]
+_OBJC_CLASS_$_NSThread  [dato]
+_OBJC_CLASS_$_NSTimeZone  [dato]
+_OBJC_CLASS_$_NSTimer  [dato]
+_OBJC_CLASS_$_NSURL  [dato]
+_OBJC_CLASS_$_NSURLCache  [dato]
+_OBJC_CLASS_$_NSURLConnection  [dato]
+_OBJC_CLASS_$_NSURLCredential  [dato]
+_OBJC_CLASS_$_NSURLRequest  [dato]
+_OBJC_CLASS_$_NSUserDefaults  [dato]
+_OBJC_CLASS_$_NSValue  [dato]
+_OBJC_CLASS_$_NSXMLParser  [dato]
+_OBJC_CLASS_$_SKMutablePayment  [dato]
+_OBJC_CLASS_$_SKPaymentQueue  [dato]
+_OBJC_CLASS_$_SKProduct  [dato]
+_OBJC_CLASS_$_SKProductsRequest  [dato]
+_OBJC_CLASS_$_UIActionSheet  [dato]
+_OBJC_CLASS_$_UIActivityIndicatorView  [dato]
+_OBJC_CLASS_$_UIAlertView  [dato]
+_OBJC_CLASS_$_UIApplication  [dato]
+_OBJC_CLASS_$_UIBarButtonItem  [dato]
+_OBJC_CLASS_$_UIButton  [dato]
+_OBJC_CLASS_$_UIColor  [dato]
+_OBJC_CLASS_$_UIDatePicker  [dato]
+_OBJC_CLASS_$_UIDevice  [dato]
+_OBJC_CLASS_$_UIFont  [dato]
+_OBJC_CLASS_$_UIImage  [dato]
+_OBJC_CLASS_$_UIImagePickerController  [dato]
+_OBJC_CLASS_$_UIImageView  [dato]
+_OBJC_CLASS_$_UILabel  [dato]
+_OBJC_CLASS_$_UIMenuController  [dato]
+_OBJC_CLASS_$_UINavigationBar  [dato]
+_OBJC_CLASS_$_UINavigationController  [dato]
+_OBJC_CLASS_$_UINavigationItem  [dato]
+_OBJC_CLASS_$_UIPageControl  [dato]
+_OBJC_CLASS_$_UIPasteboard  [dato]
+_OBJC_CLASS_$_UIPickerView  [dato]
+_OBJC_CLASS_$_UIPopoverController  [dato]
+_OBJC_CLASS_$_UIScreen  [dato]
+_OBJC_CLASS_$_UIScrollView  [dato]
+_OBJC_CLASS_$_UISearchBar  [dato]
+_OBJC_CLASS_$_UISegmentedControl  [dato]
+_OBJC_CLASS_$_UITabBarController  [dato]
+_OBJC_CLASS_$_UITableView  [dato]
+_OBJC_CLASS_$_UITableViewCell  [dato]
+_OBJC_CLASS_$_UITableViewController  [dato]
+_OBJC_CLASS_$_UITapGestureRecognizer  [dato]
+_OBJC_CLASS_$_UITextField  [dato]
+_OBJC_CLASS_$_UITextView  [dato]
+_OBJC_CLASS_$_UIToolbar  [dato]
+_OBJC_CLASS_$_UIView  [dato]
+_OBJC_CLASS_$_UIViewController  [dato]
+_OBJC_CLASS_$_UIWebView  [dato]
+_OBJC_EHTYPE_$_NSException  [dato]
+_OBJC_EHTYPE_id  [dato]
+_OBJC_METACLASS_$_NSInputStream  [dato]
+_OBJC_METACLASS_$_NSMutableURLRequest  [dato]
+_OBJC_METACLASS_$_NSObject  [dato]
+_OBJC_METACLASS_$_NSOperation  [dato]
+_OBJC_METACLASS_$_NSURLConnection  [dato]
+_OBJC_METACLASS_$_UIActivityIndicatorView  [dato]
+_OBJC_METACLASS_$_UIButton  [dato]
+_OBJC_METACLASS_$_UIImage  [dato]
+_OBJC_METACLASS_$_UIImagePickerController  [dato]
+_OBJC_METACLASS_$_UIImageView  [dato]
+_OBJC_METACLASS_$_UILabel  [dato]
+_OBJC_METACLASS_$_UINavigationController  [dato]
+_OBJC_METACLASS_$_UIPopoverController  [dato]
+_OBJC_METACLASS_$_UIScrollView  [dato]
+_OBJC_METACLASS_$_UISegmentedControl  [dato]
+_OBJC_METACLASS_$_UITableViewCell  [dato]
+_OBJC_METACLASS_$_UITableViewController  [dato]
+_OBJC_METACLASS_$_UITextField  [dato]
+_OBJC_METACLASS_$_UIView  [dato]
+_OBJC_METACLASS_$_UIViewController  [dato]
+_OBJC_METACLASS_$_UIWebView  [dato]
+_SCNetworkReachabilityCreateWithAddress
+_SCNetworkReachabilityGetFlags
+_UIApplicationDidBecomeActiveNotification  [dato]
+_UIApplicationMain  [dato]
+_UIApplicationWillEnterForegroundNotification  [dato]
+_UIApplicationWillResignActiveNotification  [dato]
+_UIApplicationWillTerminateNotification  [dato]
+_UIBackgroundTaskInvalid
+_UIDeviceOrientationDidChangeNotification  [dato]
+_UIEdgeInsetsZero  [dato]
+_UIGraphicsBeginImageContext
+_UIGraphicsEndImageContext
+_UIGraphicsGetCurrentContext
+_UIGraphicsGetImageFromCurrentImageContext
+_UIGraphicsPopContext
+_UIGraphicsPushContext
+_UIImageJPEGRepresentation
+_UIImagePNGRepresentation
+_UIImagePickerControllerEditedImage
+_UIImagePickerControllerOriginalImage
+_UIImageWriteToSavedPhotosAlbum
+_UIKeyboardAnimationCurveUserInfoKey  [dato]
+_UIKeyboardAnimationDurationUserInfoKey  [dato]
+_UIKeyboardDidHideNotification  [dato]
+_UIKeyboardDidShowNotification  [dato]
+_UIKeyboardFrameBeginUserInfoKey  [dato]
+_UIKeyboardWillHideNotification  [dato]
+_UIKeyboardWillShowNotification  [dato]
+_UIPasteboardChangedNotification  [dato]
+_UIPasteboardChangedTypesAddedKey  [dato]
+_UIRectFill
+__Block_object_assign
+__Block_object_dispose
+__DefaultRuneLocale  [dato]
+__NSConcreteGlobalBlock
+__NSConcreteStackBlock
+__Unwind_SjLj_Register
+__Unwind_SjLj_Resume
+__Unwind_SjLj_Unregister
+__ZNKSs5c_strEv
+__ZNKSs7compareEPKc
+__ZNSsC1EPKcRKSaIcE
+__ZNSsC1ERKSs
+__ZNSsC1Ev
+__ZNSsD1Ev
+__ZNSsD2Ev
+__ZNSsaSEPKc
+__ZSt9terminatev
+__ZTVN10__cxxabiv117__class_type_infoE  [dato]
+__ZTVN10__cxxabiv120__si_class_type_infoE  [dato]
+__ZdlPv
+__Znwm
+___CFConstantStringClassReference  [dato]
+___assert_rtn
+___cxa_atexit
+___cxa_guard_acquire
+___cxa_guard_release
+___cxa_pure_virtual
+___divsi3
+___dynamic_cast
+___error
+___fixdfdi
+___fixsfdi
+___fixunssfdi
+___floatdisf
+___floatundidf
+___floatundisf
+___fpclassify
+___gxx_personality_sj0
+___maskrune
+___memcpy_chk
+___modsi3
+___objc_personality_v0
+___snprintf_chk
+___sprintf_chk
+___stderrp  [dato]
+___stdinp  [dato]
+___strcat_chk
+___strcpy_chk
+___strncpy_chk
+___udivdi3
+___udivsi3
+___umoddi3
+___umodsi3
+__dispatch_main_q
+__objc_empty_cache  [dato]
+__objc_empty_vtable  [dato]
+_abort
+_accept
+_acosf
+_arc4random
+_asprintf
+_atan2
+_atoi
+_atoll
+_bind
+_bsearch
+_bzero
+_calloc
+_ceil
+_ceilf
+_class_copyPropertyList
+_clock_get_time
+_close
+_connect
+_cos
+_cosf
+_dispatch_async
+_dispatch_get_global_queue
+_exit
+_expf
+_fclose
+_fcntl
+_feof
+_ferror
+_floor
+_floorf
+_fmod
+_fopen
+_fprintf
+_fread
+_free
+_freeifaddrs
+_fseek
+_ftell
+_fwrite
+_gethostbyname
+_getifaddrs
+_gettimeofday
+_glActiveTexture
+_glAlphaFunc
+_glBindFramebufferOES
+_glBindRenderbufferOES
+_glBindTexture
+_glBlendFunc
+_glCheckFramebufferStatusOES
+_glClear
+_glClearColor
+_glClearColorx
+_glClientActiveTexture
+_glColor4x
+_glColorPointer
+_glCopyTexSubImage2D
+_glDeleteFramebuffersOES
+_glDeleteRenderbuffersOES
+_glDeleteTextures
+_glDepthMask
+_glDisable
+_glDisableClientState
+_glDrawArrays
+_glEnable
+_glEnableClientState
+_glFramebufferRenderbufferOES
+_glGenFramebuffersOES
+_glGenRenderbuffersOES
+_glGenTextures
+_glGetError
+_glGetFixedv
+_glGetIntegerv
+_glGetLightxv
+_glGetPointerv
+_glGetRenderbufferParameterivOES
+_glIsEnabled
+_glLightxv
+_glLoadIdentity
+_glLoadMatrixf
+_glMatrixMode
+_glMultMatrixx
+_glOrthox
+_glPopMatrix
+_glPushMatrix
+_glRenderbufferStorageOES
+_glRotatex
+_glScalex
+_glScissor
+_glShadeModel
+_glStencilMask
+_glTexCoordPointer
+_glTexEnvf
+_glTexEnvx
+_glTexEnvxv
+_glTexImage2D
+_glTexParameteri
+_glTexParameterx
+_glTexSubImage2D
+_glTranslatex
+_glVertexPointer
+_glViewport
+_gmtime
+_host_get_clock_service
+_host_statistics
+_inet_addr
+_inet_aton
+_inet_ntoa
+_kABPersonEmailProperty  [dato]
+_kABPersonFirstNameProperty  [dato]
+_kABPersonLastNameProperty  [dato]
+_kCFAllocatorDefault  [dato]
+_kCFBooleanTrue  [dato]
+_kCFBundleIdentifierKey  [dato]
+_kCFLocaleCountryCode  [dato]
+_kCFRunLoopCommonModes  [dato]
+_kCFRunLoopDefaultMode  [dato]
+_kCFTypeArrayCallBacks  [dato]
+_kCFTypeDictionaryValueCallBacks  [dato]
+_kEAGLColorFormatRGB565  [dato]
+_kEAGLColorFormatRGBA8  [dato]
+_kEAGLDrawablePropertyColorFormat  [dato]
+_kEAGLDrawablePropertyRetainedBacking  [dato]
+_kUTTypeImage  [dato]
+_ldexp
+_listen
+_localtime
+_log10
+_log10f
+_logf
+_longjmp
+_lrintf
+_mach_absolute_time
+_mach_host_self
+_mach_port_deallocate
+_mach_task_self_  [dato]
+_mach_timebase_info
+_malloc
+_memchr
+_memcmp
+_memcpy
+_memmove
+_memset
+_memset_pattern16
+_mkdir
+_objc_begin_catch
+_objc_copyStruct
+_objc_end_catch
+_objc_enumerationMutation
+_objc_exception_rethrow
+_objc_getProperty
+_objc_msgSend
+_objc_msgSendSuper2
+_objc_msgSend_stret
+_objc_setProperty
+_objc_sync_enter
+_objc_sync_exit
+_pow
+_powf
+_printf
+_property_getName
+_pthread_attr_destroy
+_pthread_attr_init
+_pthread_attr_setdetachstate
+_pthread_attr_setschedparam
+_pthread_attr_setschedpolicy
+_pthread_attr_setstacksize
+_pthread_cond_destroy
+_pthread_cond_init
+_pthread_cond_signal
+_pthread_cond_timedwait
+_pthread_cond_wait
+_pthread_create
+_pthread_equal
+_pthread_join
+_pthread_mutex_destroy
+_pthread_mutex_init
+_pthread_mutex_lock
+_pthread_mutex_unlock
+_pthread_mutexattr_destroy
+_pthread_mutexattr_init
+_pthread_mutexattr_settype
+_pthread_self
+_pthread_setcancelstate
+_pthread_setcanceltype
+_putchar
+_puts
+_qsort
+_rand
+_random
+_realloc
+_recv
+_roundf
+_sched_yield
+_select
+_semaphore_create
+_semaphore_destroy
+_semaphore_signal
+_semaphore_wait
+_send
+_setjmp
+_setsockopt
+_setxattr
+_sin
+_sinf
+_snprintf
+_socket
+_sprintf
+_srand
+_srandom
+_srandomdev
+_sscanf
+_stat
+_strcat
+_strchr
+_strcmp
+_strcpy
+_strerror
+_strlen
+_strncasecmp
+_strncat
+_strncmp
+_strncpy
+_strnstr
+_strptime
+_strrchr
+_strstr
+_strtod
+_strtok
+_strtoull
+_symlink
+_sysctl
+_sysctlbyname
+_tanf
+_time
+_timegm
+_unlink
+_usleep
+_vprintf
+_vsprintf
+_xmlAddChild
+_xmlBufferContent
+_xmlBufferCreate
+_xmlBufferFree
+_xmlBufferLength
+_xmlCopyNode
+_xmlDocDumpMemory
+_xmlDocGetRootElement
+_xmlDocSetRootElement
+_xmlFree
+_xmlFreeDoc
+_xmlFreeNode
+_xmlFreeNs
+_xmlFreeNsList
+_xmlHasNsProp
+_xmlHasProp
+_xmlInitParser
+_xmlNewDoc
+_xmlNewNode
+_xmlNewNs
+_xmlNewNsProp
+_xmlNewProp
+_xmlNewText
+_xmlNodeDump
+_xmlNodeGetContent
+_xmlNodeSetContent
+_xmlNodeSetName
+_xmlReadMemory
+_xmlReaderForMemory
+_xmlSearchNs
+_xmlSearchNsByHref
+_xmlSetNs
+_xmlSetTreeDoc
+_xmlStrEqual
+_xmlStrcmp
+_xmlStrdup
+_xmlStrlen
+_xmlStrsub
+_xmlTextReaderConstName
+_xmlTextReaderIsEmptyElement
+_xmlTextReaderNodeType
+_xmlTextReaderRead
+_xmlTextReaderValue
+_xmlUnlinkNode
+_xmlXPathEval
+_xmlXPathFreeContext
+_xmlXPathFreeObject
+_xmlXPathNewContext
+_xmlXPathRegisterNs
+dyld_stub_binder
