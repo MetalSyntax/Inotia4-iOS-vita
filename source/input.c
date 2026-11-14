@@ -6,7 +6,7 @@
 // lógicas de lo que se ve (p. ej. 480x320 para un juego apaisado):
 //     CROSS 420 260
 //     RTRIGGER 440 160
-// Se edita por FTP sin recompilar. SELECT+START (2 s) cambia la rotación y la guarda.
+// Se edita por FTP sin recompilar. SELECT+START (2 s) cambia la rotación y la guarda; corto, port_speed_cycle().
 #include <psp2/ctrl.h>
 #include <psp2/kernel/processmgr.h>
 #include <psp2/touch.h>
@@ -210,6 +210,10 @@ void input_poll(void) {
             l_info("rotación -> %d", port_rotation);
         }
     } else {
+        // pulsación corta (soltada antes de los 2 s de la rotación): hook opcional del port (Inotia 4: velocidad)
+        extern void port_speed_cycle(void) __attribute__((weak));
+        if (combo_since && combo_since <= now && port_speed_cycle)
+            port_speed_cycle();
         combo_since = 0;
     }
     prev_buttons = b;

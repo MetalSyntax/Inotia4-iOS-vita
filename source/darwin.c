@@ -510,6 +510,12 @@ static int d_sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *n
     return -1;
 }
 static int d_sysctl(int *name, unsigned namelen, void *oldp, size_t *oldlenp, void *newp, size_t newlen) {
+    // {CTL_HW, HW_PAGESIZE}: Com2uS (CS_knlGetFreeMemory) = pagesize * free_count de host_statistics
+    if (namelen == 2 && name[0] == 6 && name[1] == 7 && oldp && oldlenp && *oldlenp >= 4) {
+        *(int *)oldp = 4096;
+        *oldlenp = 4;
+        return 0;
+    }
     errno = ENOENT;
     return -1;
 }

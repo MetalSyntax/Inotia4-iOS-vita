@@ -61,6 +61,8 @@ static int client_unit;
 // GL_TEXTURE_ENV_MODE por unidad de textura: gles_present pisa la 0 y la restaura (el césped usa COMBINE en la 1).
 static GLint env_mode[2] = {GL_MODULATE, GL_MODULATE};
 static int server_unit;
+static int unit1_off(void);
+static void unit1_restore(void);
 static GLfixed color[4] = {0x10000, 0x10000, 0x10000, 0x10000};
 static GLuint bound_array_buffer, bound_element_buffer;
 
@@ -406,7 +408,10 @@ static void g_glDrawArrays(GLenum mode, GLint first, GLsizei count) {
     PROF(P_CONV, convert_fixed(first, first + count));
     int skinned;
     PROF(P_SKIN, skinned = skin(first, first + count));
+    int u1 = unit1_off();
     PROF(P_DRAW, HUD_DRAW(glDrawArrays(mode, first, count)));
+    if (u1)
+        unit1_restore();
     if (skinned)
         unskin();
 }
@@ -432,7 +437,10 @@ static void g_glDrawElements(GLenum mode, GLsizei count, GLenum type, const void
     }
     int skinned;
     PROF(P_SKIN, skinned = skin(mini > maxi ? 0 : mini, maxi + 1));
+    int u1 = unit1_off();
     PROF(P_DRAW, HUD_DRAW(glDrawElements(mode, count, type, idx)));
+    if (u1)
+        unit1_restore();
     if (skinned)
         unskin();
 }
@@ -759,11 +767,30 @@ static void unskin(void) {
 }
 
 int palette_active(void) { return palette_on && mi_on && wt_on; }
+// GL_TEXTURE_2D por unidad. Inotia 4 (SGL_InitState) deja una textura blanca 1x1 activa en la unidad 1 y los
+// rellenos (SGL_grpFillRect: fondos translúcidos de popups/menús) solo apagan la unidad 0: en GLES1 queda
+// color * blanco, en vitaGL el relleno no se veía. Mientras la unidad 0 está apagada se apaga también la 1.
+static int tex2d_on[2];
+static int unit1_off(void) {
+    if (tex2d_on[0] || !tex2d_on[1])
+        return 0;
+    glActiveTexture(GL_TEXTURE1);
+    glDisable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0 + server_unit);
+    return 1;
+}
+static void unit1_restore(void) {
+    glActiveTexture(GL_TEXTURE1);
+    glEnable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0 + server_unit);
+}
 static void g_glEnable(GLenum cap) {
     if (cap == GL_MATRIX_PALETTE_OES) {
         palette_on = 1;
         return;
     }
+    if (cap == GL_TEXTURE_2D)
+        tex2d_on[server_unit] = 1;
     glEnable(cap);
     chk("glEnable", cap, 0);
 }
@@ -772,6 +799,8 @@ static void g_glDisable(GLenum cap) {
         palette_on = 0;
         return;
     }
+    if (cap == GL_TEXTURE_2D)
+        tex2d_on[server_unit] = 0;
     glDisable(cap);
     chk("glDisable", cap, 0);
 }
