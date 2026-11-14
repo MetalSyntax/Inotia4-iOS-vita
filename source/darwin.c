@@ -732,6 +732,7 @@ typedef struct {
 static void *thread_tramp(void *p) {
     guest_thread t = *(guest_thread *)p;
     free(p);
+    sceKernelChangeThreadCpuAffinityMask(sceKernelGetThreadId(), SCE_KERNEL_CPU_MASK_USER_1 | SCE_KERNEL_CPU_MASK_USER_2);
     return (void *)call_guest(t.fn, (uint32_t)t.arg, 0, 0, 0);
 }
 static int d_pthread_create(pthread_t *thr, const d_attr *da, void *fn, void *arg) {

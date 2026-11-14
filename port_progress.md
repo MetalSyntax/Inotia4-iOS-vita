@@ -62,6 +62,26 @@
 - Log 034: fondos translúcidos ausentes (popup de misión, paneles de stats). SGL_InitState deja una textura
   blanca 1x1 activa en la unidad 1 y SGL_grpFillRect solo apaga la 0 (glColor4x + draw). gles.c (común): mientras
   la unidad 0 está apagada se apaga la 1 en el draw (lo mismo que hizo Inotia 3 en su hook). Probar en consola.
+- Log 035: fondos OK. ~22 FPS a 23 con bajones a 15-19 cuando el juego pasa de ~35 ms/frame (GPU < 2 ms). PERF ahora
+  suma `texto` (coretext layout: medir/dibujar con fuente del sistema) y `peor frame`. Falta el log para decidir.
+- HUD de juego oculto con L+R (oculto al empezar, como Inotia 3): la llamada a UIPlayPorting_Draw (0x59b0) va por
+  un trampolín en CSFB_grpDrawLine (sin uso) que marca gles_hud_scope; gles.c descarta los draws que caen enteros en
+  PORT_HUD_ZONES (port_config.h). Log "HUD draw (...)" para calibrar las zonas.
+- Reasignación de botones (input.c, L+R+SELECT): diálogos del sistema por acción de controls.txt (nombre al final
+  de cada línea), intercambio si el botón ya se usa, se reescribe controls.txt.
+- Idioma (L+R+START, config.txt `lang`): tools/translate/ extrae menús/objetos/habilidades/misiones de
+  memorytext_en.dat (diálogo 3895-32359 queda en inglés), arma memorytext_es/pt.dat; patch.c cambia "en" del nombre
+  en __cstring y recarga con MEMORYTEXT_Create si el juego está en inglés. Traducciones en translation/ (no va a git).
+- Log 036: texto 3-8 ms/frame, juego 30-40 ms (CPU, no GPU), picos 100-3000 ms en cargas. Caché de glifos
+  rasterizados (coretext.c); hilo del juego fijo en el núcleo 0, audio (mezcla de FMOD en coreaudio) e hilos del juego
+  en 1-2. Zonas del HUD ampliadas (draws hasta x=1.00x sin ocultar).
+- Menú de opciones como Zenonia 2 (START+SELECT corto, el juego en pausa): reasignar botones, controles en pantalla,
+  velocidad e idioma (port_menu_* en patch.c; el idioma se aplica al cerrar). Dibujado con font.ttf en una textura
+  960x544 encima del último frame (gles_overlay_tex). START/SELECT solos tocan al soltar (el combo no toca nada).
+  Quitados los diálogos y las combinaciones L+R+SELECT / L+R+START.
+- Log 037: el watchdog mataba el juego con el menú abierto (no presenta el juego): el menú cuenta como progreso.
+  PORT_GL_DIAG 0 (la captura TGA al abrir el menú trababa). Diálogo traducido también (extract.py --dialogo:
+  claves dN / dchunkN).
 - Texto con fuente del sistema invisible (USER AGREEMENT, barra del popup): SGL_RenderFontToAlphaImage
   dibuja en contexto gris con `CGContextSetGrayFillColor(1)`, que era no-op -> texto negro = alfa 0.
   Implementado + gris sin alfa ponderado por cobertura (uikit.c). Probar en consola.

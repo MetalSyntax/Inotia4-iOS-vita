@@ -11,6 +11,7 @@
 #include FT_TRUETYPE_TABLES_H
 #include FT_ADVANCES_H
 #include <math.h>
+#include <psp2/kernel/processmgr.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,8 +70,48 @@ static float units(int v, float px) { return v * px / face->units_per_EM; }
 // uikit: texto de UIStringDrawing, que asume un contexto con Y hacia abajo (UIGraphicsBeginImageContext). En un
 // CGBitmapContext sin voltear (Inotia 4: SGL_RenderFontToAlphaImage + UIGraphicsPushContext) iOS deja el glifo
 // espejado en memoria y el juego lo endereza al subirlo como textura: se espeja igual que iOS.
+// Caché de glifos rasterizados (sin borde): el juego vuelve a dibujar los mismos textos cada frame y FreeType
+// renderizaba cada letra desde cero (PERF "texto": 3-8 ms/frame en Inotia 4). Se llena una vez y no se vacía.
+typedef struct {
+    int gid, px64; // gid -1 = libre
+    short left, top;
+    unsigned short w, h;
+    float adv;
+    uint8_t *buf;
+} glyph_cached;
+#define GCACHE 2048
+static glyph_cached gcache[GCACHE];
+static int gcache_init;
+static glyph_cached *gcache_slot(int gid, int px64) {
+    if (!gcache_init) {
+        for (int i = 0; i < GCACHE; i++)
+            gcache[i].gid = -1;
+        gcache_init = 1;
+    }
+    unsigned h = ((unsigned)gid * 2654435761u ^ (unsigned)px64 * 40503u) % GCACHE;
+    for (int k = 0; k < 8; k++, h = (h + 1) % GCACHE)
+        if (gcache[h].gid == gid && gcache[h].px64 == px64)
+            return &gcache[h];
+        else if (gcache[h].gid < 0)
+            return &gcache[h]; // libre: el llamador lo llena
+    return NULL; // ponytail: zona llena -> sin caché para ese glifo
+}
+static void blit_glyph(void *ctx, const glyph_cached *g, float col, float row, int mirror) {
+    int x0 = (int)lroundf(col) + g->left, base = (int)lroundf(row);
+    for (unsigned y = 0; y < g->h; y++)
+        for (unsigned x = 0; x < g->w; x++)
+            if (g->buf[y * g->w + x])
+                cg_ctx_cover(ctx, x0 + x, mirror ? base + g->top - 1 - (int)y : base - g->top + (int)y, g->buf[y * g->w + x]);
+}
+
 static float draw_glyph(void *ctx, int gid, float px, float ux, float uy, float stroke, int uikit) {
     float col, row, c2, r2;
+    glyph_cached *gc = stroke > 0 ? NULL : gcache_slot(gid, (int)lroundf(px * 64));
+    if (gc && gc->gid == gid) {
+        if (ctx && cg_ctx_map(ctx, ux, uy, &col, &row))
+            blit_glyph(ctx, gc, col, row, uikit && cg_ctx_map(ctx, ux, uy + 1, &c2, &r2) && r2 < row);
+        return gc->adv;
+    }
     set_px(px);
     if (FT_Load_Glyph(face, gid, FT_LOAD_NO_BITMAP))
         return 0;
@@ -86,6 +127,12 @@ static float draw_glyph(void *ctx, int gid, float px, float ux, float uy, float 
     }
     if (!FT_Glyph_To_Bitmap(&g, FT_RENDER_MODE_NORMAL, NULL, 1)) {
         FT_BitmapGlyph b = (FT_BitmapGlyph)g;
+        if (gc && (gc->buf = malloc(b->bitmap.width * b->bitmap.rows + 1))) {
+            for (unsigned y = 0; y < b->bitmap.rows; y++)
+                memcpy(gc->buf + y * b->bitmap.width, b->bitmap.buffer + y * b->bitmap.pitch, b->bitmap.width);
+            gc->left = b->left, gc->top = b->top, gc->w = b->bitmap.width, gc->h = b->bitmap.rows, gc->adv = adv;
+            gc->px64 = (int)lroundf(px * 64), gc->gid = gid;
+        }
         int mirror = uikit && cg_ctx_map(ctx, ux, uy + 1, &c2, &r2) && r2 < row; // Y del usuario hacia arriba
         int x0 = (int)lroundf(col) + b->left, base = (int)lroundf(row);
         for (unsigned y = 0; y < b->bitmap.rows; y++)
@@ -129,7 +176,11 @@ static float glyph_adv(int cp, float px) {
 
 // Layout de UIKit: líneas por '\n' y ajuste a maxw (por palabra; si no hay espacio, por carácter).
 // Con ctx dibuja en r (origen arriba-izquierda, alineación 0 izq / 1 centro / 2 der). Devuelve el tamaño.
+// Tiempo de texto del sistema por frame (línea PERF de gles.c): medir/dibujar con UIKit cuesta CPU.
+uint64_t text_us;
+unsigned text_n;
 static void layout(CGSize *ret, const char *text, float px, float maxw, float maxh, int align, void *ctx, CGRect r) {
+    uint64_t t0 = sceKernelGetProcessTimeWide();
     pthread_mutex_lock(&ft_lock);
     set_px(px);
     float asc = face->size->metrics.ascender / 64.0f, lh = face->size->metrics.height / 64.0f, maxlw = 0;
@@ -179,6 +230,7 @@ static void layout(CGSize *ret, const char *text, float px, float maxw, float ma
     free(cp);
     free(adv);
     pthread_mutex_unlock(&ft_lock);
+    text_us += sceKernelGetProcessTimeWide() - t0, text_n++;
     *ret = (CGSize){ceilf(maxlw), ceilf(lines * lh)};
 }
 
@@ -442,4 +494,32 @@ void coretext_init(void) {
     c_CGPath = objc_define("CGPath", "NSObject", sizeof(cg_path), NULL, NULL);
     c_UIFont = objc_define("UIFont", "NSObject", sizeof(ct_font), uifont_i, uifont_c);
     add_methods(objc_getClass("NSString"), nsstring_draw);
+}
+
+// Texto UTF-8 en un búfer RGBA (ABGR en memoria) con font.ttf: menú de opciones del port (input.c). y = línea base.
+// Devuelve el ancho dibujado.
+int ct_text_rgba(uint32_t *px, int w, int h, int x, int y, float size, uint32_t abgr, const char *text) {
+    pthread_mutex_lock(&ft_lock);
+    set_px(size);
+    int x0 = x;
+    for (const unsigned char *p = (const unsigned char *)text; *p;) {
+        int cp = utf8_next(&p);
+        if (FT_Load_Char(face, cp, FT_LOAD_RENDER))
+            continue;
+        FT_GlyphSlot g = face->glyph;
+        for (unsigned r = 0; r < g->bitmap.rows; r++)
+            for (unsigned c = 0; c < g->bitmap.width; c++) {
+                int X = x + g->bitmap_left + c, Y = y - g->bitmap_top + r;
+                unsigned a = g->bitmap.buffer[r * g->bitmap.pitch + c];
+                if (!a || X < 0 || Y < 0 || X >= w || Y >= h)
+                    continue;
+                uint32_t d = px[Y * w + X], o = 0xff000000;
+                for (int sh = 0; sh < 24; sh += 8)
+                    o |= ((((abgr >> sh) & 0xff) * a + ((d >> sh) & 0xff) * (255 - a)) / 255) << sh;
+                px[Y * w + X] = o;
+            }
+        x += g->advance.x >> 6;
+    }
+    pthread_mutex_unlock(&ft_lock);
+    return x - x0;
 }

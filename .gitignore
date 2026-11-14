@@ -52,3 +52,9 @@ cmake-build-*/
 /decompiled/
 binds.bin
 report.txt
+
+# Textos del juego extraídos y traducidos (derivados del IPA)
+translation/
+
+# Capturas de la consola (imágenes del juego)
+screenshots/

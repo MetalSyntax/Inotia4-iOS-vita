@@ -15,3 +15,7 @@
 #define PORT_SCREEN_SCALE 2.0f
 // ponytail: igual que Zenonia 5 (mismo publisher); confirmar el offset de st_size con annotate.py en un caller de _stat.
 #define PORT_STAT_INO64 1
+// HUD de juego oculto con L+R (gles.c, patch.c): cruceta abajo a la izquierda; ataque, habilidades y poción abajo a la
+// derecha. Normalizadas 0..1 sobre lo que se ve (480x320), y hacia abajo. Medido en la captura ingame.
+#define PORT_HUD_ZONES {{-0.05f, 0.6f, 0.35f, 1.05f}, {0.5f, 0.57f, 1.05f, 1.05f}} // log 036: draws hasta x=1.00x
+#define PORT_GL_DIAG 0 // sin capturas TGA ni trazas de frame: escribir a ux0 traba el hilo principal

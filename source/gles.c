@@ -355,6 +355,49 @@ static void trace_draw(const char *fn, GLenum mode, int count, int first) {
 // Un draw con la textura del HUD se repite una vez por franja visible con scissor (cortado con el scissor
 // del juego si lo había): lo que cae fuera, los controles táctiles, no se dibuja. Siguen respondiendo al toque.
 int gles_hud_hidden = 1; // input.c: L+R
+// Zonas (PORT_HUD_ZONES, port_config.h): mientras el port marca gles_hud_scope (patch.c: el juego está dibujando
+// su HUD de juego) y el HUD está oculto, no se dibuja lo que cae entero dentro de una zona (cruceta, ataque y
+// habilidades). Normalizadas 0..1 sobre lo que se ve, y hacia abajo. Los toques siguen funcionando.
+int gles_hud_scope;
+#ifdef PORT_HUD_ZONES
+static const float hud_zones[][4] = PORT_HUD_ZONES; // x0, y0, x1, y1
+static int hud_zone_logs;
+static int hud_zone_skip(int first, int count) {
+    const array_ptr *a = &arr[A_VTX];
+    if (!a->ptr || a->vbo || a->size < 2 || count <= 0)
+        return 0;
+    int esz = a->type == GL_SHORT ? 2 : a->type == GL_BYTE ? 1 : 4;
+    int stride = a->stride ? a->stride : a->size * esz;
+    GLfloat pm[16], mv[16];
+    glGetFloatv(GL_PROJECTION_MATRIX, pm);
+    glGetFloatv(GL_MODELVIEW_MATRIX, mv);
+    float x0 = 2, y0 = 2, x1 = -1, y1 = -1;
+    for (int i = first; i < first + count; i++) {
+        const uint8_t *e = (const uint8_t *)a->ptr + i * stride;
+        float v[2];
+        for (int c = 0; c < 2; c++)
+            v[c] = a->type == GL_FLOAT ? ((const float *)e)[c] : a->type == GL_FIXED ? ((const int32_t *)e)[c] / 65536.0f
+                 : a->type == GL_SHORT ? ((const int16_t *)e)[c] : ((const int8_t *)e)[c];
+        float ex = mv[0] * v[0] + mv[4] * v[1] + mv[12], ey = mv[1] * v[0] + mv[5] * v[1] + mv[13];
+        float ez = mv[2] * v[0] + mv[6] * v[1] + mv[14], ew = mv[3] * v[0] + mv[7] * v[1] + mv[15];
+        float cx = pm[0] * ex + pm[4] * ey + pm[8] * ez + pm[12] * ew, cy = pm[1] * ex + pm[5] * ey + pm[9] * ez + pm[13] * ew;
+        float cw = pm[3] * ex + pm[7] * ey + pm[11] * ez + pm[15] * ew;
+        if (cw == 0)
+            return 0;
+        float nx = (cx / cw + 1) / 2, ny = (1 - cy / cw) / 2;
+        x0 = nx < x0 ? nx : x0, x1 = nx > x1 ? nx : x1, y0 = ny < y0 ? ny : y0, y1 = ny > y1 ? ny : y1;
+    }
+    int skip = 0;
+    for (unsigned z = 0; z < sizeof(hud_zones) / sizeof(hud_zones[0]); z++)
+        if (x0 >= hud_zones[z][0] && y0 >= hud_zones[z][1] && x1 <= hud_zones[z][2] && y1 <= hud_zones[z][3])
+            skip = 1;
+    if (hud_zone_logs < 60) { // ponytail: calibración de zonas; quitar cuando se vea bien
+        hud_zone_logs++;
+        l_info("HUD draw (%.2f,%.2f)-(%.2f,%.2f)%s", x0, y0, x1, y1, skip ? " oculto" : "");
+    }
+    return skip;
+}
+#endif
 #ifdef PORT_HUD_TEX
 static GLuint hud_tex;
 static const int hud_keep[][4] = PORT_HUD_KEEP;
@@ -403,6 +446,10 @@ static void hud_restore(void) {
 #endif
 
 static void g_glDrawArrays(GLenum mode, GLint first, GLsizei count) {
+#ifdef PORT_HUD_ZONES
+    if (gles_hud_scope && gles_hud_hidden && hud_zone_skip(first, count))
+        return;
+#endif
     trace_draw("DrawArrays", mode, count, first);
     draw_calls++;
     PROF(P_CONV, convert_fixed(first, first + count));
@@ -1094,6 +1141,7 @@ static void dump_frame(int lit) {
     free(px);
 }
 
+GLuint gles_overlay_tex;
 void gles_present(void) {
     static int presents, lit_at;
     dump_frame(trace_frame && lit_state > 1);
@@ -1170,25 +1218,43 @@ void gles_present(void) {
     glVertexPointer(2, GL_FLOAT, 0, xy);
     glTexCoordPointer(2, GL_FLOAT, 0, uv_rot[gles_rotation()]);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    if (gles_overlay_tex) { // menú de opciones (input.c), 960x544 con alfa
+        GLint bs, bd;
+        glGetIntegerv(GL_BLEND_SRC, &bs);
+        glGetIntegerv(GL_BLEND_DST, &bd);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        static const float oxy[] = {0, 0, SCR_W, 0, 0, SCR_H, SCR_W, SCR_H}, ouv[] = {0, 0, 1, 0, 0, 1, 1, 1};
+        glBindTexture(GL_TEXTURE_2D, gles_overlay_tex);
+        glVertexPointer(2, GL_FLOAT, 0, oxy);
+        glTexCoordPointer(2, GL_FLOAT, 0, ouv);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glBlendFunc(bs, bd);
+    }
     PROF(P_SWAP, vglSwapBuffers(ime_active()));
-    extern uint64_t ui_idle_us; // uikit.c
-    static uint64_t prof_t0, prof_frames;
+    extern uint64_t ui_idle_us, text_us; // uikit.c, coretext.c
+    extern unsigned text_n;
+    static uint64_t prof_t0, prof_frames, last_swap, worst;
     prof_frames++;
+    if (last_swap && now_us() - last_swap > worst)
+        worst = now_us() - last_swap;
+    last_swap = now_us();
     if (!prof_t0)
         prof_t0 = now_us();
     else if (now_us() - prof_t0 > 5000000) {
         double f = prof_frames, tot = (now_us() - prof_t0) / 1000.0 / f;
         l_info("PERF %.1f fps | ms/frame: total %.1f conv %.1f skin %.1f(%u, %u vtx) draw %.1f(%u) buf %.1f(%u, %u KB) tex %.1f(%u) "
-               "swap %.1f | espera %.1f | resto (juego) %.1f",
+               "swap %.1f | espera %.1f | resto (juego) %.1f, texto %.1f(%u) | peor frame %.0f",
                1000.0 / tot, tot, prof[P_CONV] / 1e3 / f, prof[P_SKIN] / 1e3 / f, (unsigned)(prof_n[P_SKIN] / f), (unsigned)(skin_vtx / f),
                prof[P_DRAW] / 1e3 / f, (unsigned)(prof_n[P_DRAW] / f), prof[P_BUF] / 1e3 / f, (unsigned)(prof_n[P_BUF] / f),
                (unsigned)(prof_bytes / 1024 / f), prof[P_TEX] / 1e3 / f, (unsigned)(prof_n[P_TEX] / f), prof[P_SWAP] / 1e3 / f,
                ui_idle_us / 1e3 / f,
-               tot - (prof[P_CONV] + prof[P_SKIN] + prof[P_DRAW] + prof[P_BUF] + prof[P_TEX] + prof[P_SWAP] + ui_idle_us) / 1e3 / f);
+               tot - (prof[P_CONV] + prof[P_SKIN] + prof[P_DRAW] + prof[P_BUF] + prof[P_TEX] + prof[P_SWAP] + ui_idle_us) / 1e3 / f,
+               text_us / 1e3 / f, (unsigned)(text_n / f), worst / 1e3);
         if (envc_n)
             l_info("ENVCOLOR alfa %g .. %g (%u llamadas)", envc_min, envc_max, envc_n);
         envc_min = 1e9f, envc_max = -1e9f, envc_n = 0;
-        memset(prof, 0, sizeof(prof)), memset(prof_n, 0, sizeof(prof_n)), prof_bytes = 0, skin_vtx = 0, ui_idle_us = 0;
+        memset(prof, 0, sizeof(prof)), memset(prof_n, 0, sizeof(prof_n)), prof_bytes = 0, skin_vtx = 0, ui_idle_us = 0, text_us = 0, text_n = 0, worst = 0;
         prof_frames = 0, prof_t0 = now_us();
     }
 
