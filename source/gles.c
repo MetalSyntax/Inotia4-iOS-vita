@@ -1065,18 +1065,16 @@ extern int ui_status_portrait(void);
 int gles_rotation(void) { return fb_w > fb_h || ui_status_portrait() ? 0 : port_rotation; }
 
 // Rectángulo destino en pantalla (para input.c: mismo mapeo inverso).
+// Menú de opciones (input.c, controls.txt): aspecto (0 original con bandas, 1 pantalla completa) y filtro del escalado
+// (0 suave/bilineal, 1 nítido/vecino más cercano).
+int gles_stretch = PORT_STRETCH, gles_filter;
 void gles_dest_rect(int *x, int *y, int *w, int *h) {
     int rw = gles_rotation() ? fb_h : fb_w, rh = gles_rotation() ? fb_w : fb_h; // tamaño visto apaisado
-#if PORT_STRETCH
-    (void)rw, (void)rh;
-    *x = 0, *y = 0, *w = SCR_W, *h = SCR_H;
-#else
     int dw = SCR_H * rw / rh;
-    if (dw > SCR_W)
+    if (dw > SCR_W || gles_stretch)
         dw = SCR_W;
     *w = dw, *h = SCR_H;
     *x = (SCR_W - dw) / 2, *y = 0;
-#endif
 }
 
 // ---------------------------------------------------------------- diagnóstico (pantalla blanca, corrida 010)
@@ -1190,6 +1188,9 @@ void gles_present(void) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glColor4f(1, 1, 1, 1);
     glBindTexture(GL_TEXTURE_2D, scr_tex);
+    GLint filt = gles_filter ? GL_NEAREST : GL_LINEAR; // cada frame: gles_set_size lo deja en LINEAR
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filt);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filt);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     // matrices guardadas a mano: un glPushMatrix acá desborda la pila de 2 niveles de vitaGL (ver g_glPushMatrix)
     GLfloat saved_tm[16], saved_pm[16], saved_mv[16];

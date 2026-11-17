@@ -91,3 +91,8 @@
 1. `cp extras/nib.txt ux0_data/inotia4ios/nib.txt`, subir datos (`python3 -I tools/deploy_data.py`) e
    instalar `build/inotia4ios.vpk` (TITLEID `PSVI4I001`).
 2. Abrir, bajar `ux0:data/inotia4ios/logs/` (`deploy_data.py --logs`): primer `unimpl:` / `nib:` / crash.
+- 2026-11-17 — Extras de Zenonia 2 / Destinia en el runtime común (input.c, gles.c; también sincronizado a
+  Zenonia 5): varias teclas por acción (X reemplaza, cuadrado agrega, triángulo quita; `CROSS+REAR_BR` / `NONE` en
+  controls.txt), táctil trasero por cuadrantes (REAR_TL/TR/BL/BR), "Restaurar botones por defecto" (copia
+  controls.default.txt en la primera corrida), relación de aspecto (original 3:2 / pantalla completa) y filtro de
+  escalado (suave / nítido), guardados como ASPECT/FILTER en controls.txt. Compila; **probar en consola**.
